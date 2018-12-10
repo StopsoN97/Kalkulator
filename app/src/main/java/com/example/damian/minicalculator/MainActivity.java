@@ -36,7 +36,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         editTextL2= findViewById(R.id.editTextL2);
         textViewWynik = findViewById(R.id.textViewResult);
 
-
         buttonAdd.setOnClickListener(this);
         buttonSubstract.setOnClickListener(this);
         buttonDivision.setOnClickListener(this);
@@ -44,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         buttonSave.setOnClickListener(this);
     }
 
+    //funkcja na klikniecie
     @Override
     public void onClick(View v) {
 
