@@ -8,30 +8,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.content.Intent;
 
-import java.util.ArrayList;
-
-
-//import org.apache.commons.jexl3.JexlBuilder;
-//import org.apache.commons.jexl3.JexlEngine;
-//import org.apache.commons.jexl3.JexlException;
-//import org.apache.commons.jexl3.JexlExpression;
-//import android.widget.Toast;
-//import org.apache.commons.jexl3.JexlBuilder;
-//import org.apache.commons.jexl3.JexlEngine;
-//import org.apache.commons.jexl3.JexlException;
-//import org.apache.commons.jexl3.JexlExpression;
-
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    public String zapis="";
+    public String zapis1="", zapis2="", zapis3="", zapis4="", zapis="";
     private Button buttonAdd,buttonSubstract,buttonMultiply,buttonDivision,buttonSave;
     private TextView textViewWynik;
     private EditText editTextL1, editTextL2;
-    private static StringBuffer resultString;
-    private static ArrayList<String> history;
-    public static final String HISTORY = "ovh.damian.minicalculator.history";
-
 
  //funkcja pierwotna
     @Override
@@ -39,21 +22,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         init();
-
-        if (history == null) {
-            history = new ArrayList<>();
-        }
-
-        if (resultString == null) {
-            resultString = new StringBuffer(((TextView) findViewById(R.id.textViewResult)).getText());
-        } else {
-            this.updateResultString();
-        }
-
-    }
-
-    private void updateResultString() {
-        ((TextView) findViewById(R.id.textViewResult)).setText(resultString);
     }
 
     private void init() {
@@ -96,14 +64,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 int subtraction = Integer.parseInt(num1) - Integer.parseInt(num2);
                 zapis=num1+"-"+num2+"=";
                 zapis+=String.valueOf(subtraction);
-                textViewWynik.setText(String.valueOf(subtraction));
+                //textViewWynik.setText(String.valueOf(subtraction));
+                textViewWynik.setText(zapis);
                 break;
 
             case R.id.buttonMultiply: //Mnożenie
                 int multiply = Integer.parseInt(num1) * Integer.parseInt(num2);
                 zapis=num1+"*"+num2+"=";
                 zapis+=String.valueOf(multiply);
-                textViewWynik.setText(String.valueOf(multiply));
+                textViewWynik.setText(zapis);
                 break;
 
             case R.id.buttonDivision: //Dzielenie
@@ -111,7 +80,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     int division = Integer.parseInt(num1) / Integer.parseInt(num2);
                     zapis=num1+"/"+num2+"=";
                     zapis+=String.valueOf(division);
-                    textViewWynik.setText(String.valueOf(division));
+                    //textViewWynik.setText(String.valueOf(division));
+                    textViewWynik.setText(zapis);
                 }catch(Exception e){
                     textViewWynik.setText("Nie mozna podzielic przez 0!");
                 }

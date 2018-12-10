@@ -59,23 +59,32 @@
 
     <TextView
         android:id="@+id/textViewResult"
-        android:layout_width="74dp"
-        android:layout_height="28dp"
+        android:layout_width="115dp"
+        android:layout_height="55dp"
+        android:layout_marginStart="48dp"
+        android:layout_marginLeft="48dp"
         android:layout_marginTop="184dp"
         android:layout_marginEnd="76dp"
         android:layout_marginRight="76dp"
+        android:layout_marginBottom="96dp"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/buttonSubstract"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/textViewTekst"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.592" />
 
     <TextView
-        android:id="@+id/textView1"
-        android:layout_width="45dp"
-        android:layout_height="31dp"
-        android:layout_marginStart="168dp"
-        android:layout_marginLeft="168dp"
-        android:layout_marginTop="184dp"
+        android:id="@+id/textViewTekst"
+        android:layout_width="91dp"
+        android:layout_height="54dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginLeft="60dp"
+        android:layout_marginTop="168dp"
         android:autoText="false"
         android:text="Wynik"
+        android:textSize="24sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
