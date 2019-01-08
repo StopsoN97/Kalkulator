@@ -11,7 +11,7 @@ public class Zapisane extends AppCompatActivity {
     private void init() {
 
         textViewSaved = findViewById(R.id.textViewSaved);
-        textViewSaved.setText("siema");
+        textViewSaved.setText("tutaj beda zapisane dzialania");
 
      }
 
