@@ -12,7 +12,7 @@ public class Zapisane extends AppCompatActivity {
 
         textViewSaved = findViewById(R.id.textViewSaved);
         textViewSaved.setText("tutaj beda zapisane dzialania");
-
+    //xdddd
      }
 
     @Override
