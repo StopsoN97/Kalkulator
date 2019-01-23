@@ -1,24 +1,30 @@
 package com.example.damian.minicalculator;
 
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.TextView;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+
+import java.util.ArrayList;
 
 
 public class Zapisane extends AppCompatActivity {
-    private TextView textViewSaved;
-
-    private void init() {
-
-        textViewSaved = findViewById(R.id.textViewSaved);
-        textViewSaved.setText("tutaj beda zapisane dzialania");
-    //xdddd
-     }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_zapisane);
-        init();
+
+        ArrayList<String> items = getIntent().getStringArrayListExtra(MainActivity.HISTORY);
+        ListView listView = findViewById(R.id.resultListView);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.zapisane_item, items);
+        listView.setAdapter(adapter);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public void onClickBackToCalculator(View v) {
+        this.finishAndRemoveTask();
     }
 }

@@ -1,100 +1,116 @@
 package com.example.damian.minicalculator;
 
-import android.support.v7.app.AppCompatActivity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
-import android.content.Intent;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+import org.apache.commons.jexl3.JexlBuilder;
+import org.apache.commons.jexl3.JexlEngine;
+import org.apache.commons.jexl3.JexlException;
+import org.apache.commons.jexl3.JexlExpression;
 
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity {
 
-    public String zapis="";
-    private Button buttonAdd,buttonSubstract,buttonMultiply,buttonDivision,buttonSave;
-    private TextView textViewWynik;
-    private EditText editTextL1, editTextL2;
+    public static final String HISTORY = "ovh.damian.minicalculator.history";
+    private static StringBuffer resultString;
+    private static boolean lastPressedButtonIsArithmeticSymbol = false;
+    private static final JexlEngine jexl = new JexlBuilder().cache(512).strict(true).silent(false).create();
+    private static ArrayList<String> history;
+    private static boolean isResultInResultTextView = false;
 
- //funkcja pierwotna
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        init();
-    }
-
-    private void init() {
-
-        buttonAdd = findViewById(R.id.buttonAdd);
-        buttonSubstract = findViewById(R.id.buttonSubstract);
-        buttonMultiply = findViewById(R.id.buttonMultiply);
-        buttonDivision = findViewById(R.id.buttonDivision);
-        buttonSave = findViewById(R.id.buttonSave);
-        editTextL1 = findViewById(R.id.editTextL1);
-        editTextL2= findViewById(R.id.editTextL2);
-        textViewWynik = findViewById(R.id.textViewResult);
-
-        buttonAdd.setOnClickListener(this);
-        buttonSubstract.setOnClickListener(this);
-        buttonDivision.setOnClickListener(this);
-        buttonMultiply.setOnClickListener(this);
-        buttonSave.setOnClickListener(this);
-    }
-
-    //funkcja na klikniecie
-    @Override
-    public void onClick(View v) {
-
-
-        String num1 = editTextL1.getText().toString();
-        String num2 = editTextL2.getText().toString();
-
-        switch(v.getId()){
-            case R.id.buttonAdd: //Dodawanie
-                int addition = Integer.parseInt(num1) + Integer.parseInt(num2);
-
-                //zapis=num1+"+"+num2+"=";
-                zapis+=String.valueOf(addition);
-                textViewWynik.setText(String.valueOf(addition));
-                textViewWynik.setText(zapis);
-
-
-                break;
-            case R.id.buttonSubstract: //Odejmowanie
-                int subtraction = Integer.parseInt(num1) - Integer.parseInt(num2);
-                //zapis=num1+"-"+num2+"=";
-                zapis+=String.valueOf(subtraction);
-                textViewWynik.setText(String.valueOf(subtraction));
-                textViewWynik.setText(zapis);
-                break;
-
-            case R.id.buttonMultiply: //Mnożenie
-                int multiply = Integer.parseInt(num1) * Integer.parseInt(num2);
-                //zapis=num1+"*"+num2+"=";
-                zapis+=String.valueOf(multiply);
-                textViewWynik.setText(zapis);
-                break;
-
-            case R.id.buttonDivision: //Dzielenie
-                try{
-                    int division = Integer.parseInt(num1) / Integer.parseInt(num2);
-                    //zapis=num1+"/"+num2+"=";
-                    zapis+=String.valueOf(division);
-                    textViewWynik.setText(String.valueOf(division));
-                    textViewWynik.setText(zapis);
-                }catch(Exception e){
-                    textViewWynik.setText("Nie mozna podzielic przez 0!");
-                }
-                break;
-
-            case R.id.buttonSave:
-
-                Intent intent = new Intent(this,Zapisane.class);
-                intent.putExtra("klucz", textViewWynik.getText());
-                startActivity(intent);
-                break;
+        if (history == null) {
+            history = new ArrayList<>();
         }
+
+        if (resultString == null) {
+            resultString = new StringBuffer(((TextView) findViewById(R.id.textViewResult)).getText());
+        } else {
+            this.updateResultString();
+        }
+    }
+
+    public void onClickAddTextToResult(View v) {
+
+        Button senderButton = (Button) v;
+
+        boolean isSenderArithmeticButton = senderButton.getText().toString().equals("/")
+                || senderButton.getText().toString().equals("*")
+                || senderButton.getText().toString().equals("-")
+                || senderButton.getText().toString().equals("+");
+
+        if (isResultInResultTextView && !isSenderArithmeticButton) {
+            this.onClickClearResult(v);
+        }
+        isResultInResultTextView = false;
+
+        if (!(resultString.length() == 0 && isSenderArithmeticButton)) {
+
+            if (isSenderArithmeticButton && lastPressedButtonIsArithmeticSymbol) {
+                resultString.replace(resultString.length() - 1, resultString.length(), senderButton.getText().toString());
+            } else {
+                resultString.append(senderButton.getText());
+            }
+
+            lastPressedButtonIsArithmeticSymbol = isSenderArithmeticButton;
+
+            this.updateResultString();
+        }
+    }
+
+    public void onClickClearResult(View v) {
+        resultString = new StringBuffer();
+        lastPressedButtonIsArithmeticSymbol = false;
+        isResultInResultTextView = false;
+        this.updateResultString();
+    }
+
+
+
+    public void onClickGetResult(View v) {
+        if (!lastPressedButtonIsArithmeticSymbol && resultString.length() > 0) {
+            JexlExpression e = jexl.createExpression(resultString.toString());
+            try {
+                if (!resultString.toString().contentEquals(e.evaluate(null).toString())) {
+                    resultString.append('=');
+                    resultString.append(e.evaluate(null));
+
+                    history.add(0, resultString.toString());
+
+                    resultString.replace(0, resultString.length(), e.evaluate(null).toString());
+                    isResultInResultTextView = true;
+
+                    updateResultString();
+                }
+            } catch (JexlException exception) {
+                Toast.makeText(getApplicationContext(), "Wprowadzono niepoprawne wyrażenie!", Toast.LENGTH_LONG).show();
+                this.onClickClearResult(v);
+            }
+        }
+    }
+
+    /*public void onClickClearHistory(View v) {
+        history.clear();
+    }*/
+
+    public void onClickShowHistory(View v) {
+        Intent intent = new Intent(this, Zapisane.class);
+        intent.putStringArrayListExtra(HISTORY, history);
+        startActivity(intent);
+    }
+
+    private void updateResultString() {
+        ((TextView) findViewById(R.id.textViewResult)).setText(resultString);
     }
 }
