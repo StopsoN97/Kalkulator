@@ -7,6 +7,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+import java.lang.StringBuffer;
+import java.lang.String;
 
 import java.util.ArrayList;
 import org.apache.commons.jexl3.JexlBuilder;
@@ -23,7 +25,6 @@ public class MainActivity extends AppCompatActivity {
     private static final JexlEngine jexl = new JexlBuilder().cache(512).strict(true).silent(false).create();
     private static ArrayList<String> history;
     private static boolean isResultInResultTextView = false;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +77,11 @@ public class MainActivity extends AppCompatActivity {
         this.updateResultString();
     }
 
+    public void onClickDeleteOneChar(View v){
 
+        resultString.delete(resultString.length()-1,resultString.length());
+        this.updateResultString();
+    }
 
     public void onClickGetResult(View v) {
         if (!lastPressedButtonIsArithmeticSymbol && resultString.length() > 0) {
@@ -100,9 +105,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /*public void onClickClearHistory(View v) {
+    public void onClickClearHistory(View v) {
+
         history.clear();
-    }*/
+    }
 
     public void onClickShowHistory(View v) {
         Intent intent = new Intent(this, Zapisane.class);
