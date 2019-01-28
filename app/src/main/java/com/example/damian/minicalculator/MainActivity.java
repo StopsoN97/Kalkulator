@@ -6,14 +6,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
-import java.lang.StringBuffer;
-import java.lang.String;
 
 import java.util.ArrayList;
 import org.apache.commons.jexl3.JexlBuilder;
 import org.apache.commons.jexl3.JexlEngine;
-import org.apache.commons.jexl3.JexlException;
 import org.apache.commons.jexl3.JexlExpression;
 
 
@@ -28,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -86,10 +83,13 @@ public class MainActivity extends AppCompatActivity {
     public void onClickGetResult(View v) {
         if (!lastPressedButtonIsArithmeticSymbol && resultString.length() > 0) {
             JexlExpression e = jexl.createExpression(resultString.toString());
-            try {
+            //try {
                 if (!resultString.toString().contentEquals(e.evaluate(null).toString())) {
                     resultString.append('=');
                     resultString.append(e.evaluate(null));
+
+                    DataBaseHandler database = new DataBaseHandler(this);
+                    database.setData(resultString.toString());
 
                     history.add(0, resultString.toString());
 
@@ -98,20 +98,20 @@ public class MainActivity extends AppCompatActivity {
 
                     updateResultString();
                 }
-            } catch (JexlException exception) {
-                Toast.makeText(getApplicationContext(), "Wprowadzono niepoprawne wyrażenie!", Toast.LENGTH_LONG).show();
-                this.onClickClearResult(v);
-            }
+            //} catch (JexlException exception) {
+                //Toast.makeText(getApplicationContext(), "Wprowadzono niepoprawne wyrażenie!", Toast.LENGTH_LONG).show();
+                //this.onClickClearResult(v);
+            //}
         }
     }
 
     public void onClickClearHistory(View v) {
-
-        history.clear();
+        DataBaseHandler database = new DataBaseHandler(this);
+        database.cleanData();
     }
 
     public void onClickShowHistory(View v) {
-        Intent intent = new Intent(this, Zapisane.class);
+        Intent intent = new Intent(this, HistoryActivity.class);
         intent.putStringArrayListExtra(HISTORY, history);
         startActivity(intent);
     }
